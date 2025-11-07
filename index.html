@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escape the Patterns - Mobile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            overflow-x: hidden;
+            font-size: 14px;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 15px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="30" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="70" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="70" cy="80" r="2.5" fill="rgba(255,255,255,0.1)"/></svg>');
+        }
+        
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header p {
+            font-size: 0.9em;
+        }
+        
+        .content {
+            padding: 15px;
+        }
+        
+        .game-instructions {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .game-instructions h2 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+        
+        .game-instructions p {
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+        
+        .challenge-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .challenge-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .challenge-card h3 {
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+        
+        .challenge-card p {
+            font-size: 0.9em;
+        }
+        
+        .challenge-card:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .opposite-colors-guide {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 12px;
+            border: 2px solid rgba(102, 126, 234, 0.5);
+        }
+
+        .opposite-colors-guide h4 {
+            font-size: 1em;
+            margin-bottom: 10px;
+            text-align: center;
+            color: #333;
+        }
+
+        .color-pairs {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .color-pair {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            font-size: 0.9em;
+            color: #333;
+        }
+
+        .color-box {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: 2px solid white;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+        }
+
+        .color-red { background: linear-gradient(135deg, #ff6b6b, #ee5a52); }
+        .color-green { background: linear-gradient(135deg, #51cf66, #37b24d); }
+        .color-blue { background: linear-gradient(135deg, #4dabf7, #339af0); }
+        .color-yellow { background: linear-gradient(135deg, #ffd43b, #fab005); }
+        
+        .game-area {
+            background: #1a1a2e;
+            border-radius: 15px;
+            padding: 15px;
+            margin: 15px 0;
+            position: relative;
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .status-panel {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+        
+        .status-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 6px 10px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .arrow-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 70px);
+            gap: 12px;
+            margin: 15px 0;
+        }
+        
+        .arrow {
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            user-select: none;
+        }
+        
+        .arrow:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 20px rgba(255, 255, 255, 0.3);
+        }
+        
+        .arrow-up { background: linear-gradient(135deg, #ff6b6b, #ee5a52); }
+        .arrow-down { background: linear-gradient(135deg, #4ecdc4, #44a08d); }
+        .arrow-left { background: linear-gradient(135deg, #45b7d1, #3498db); }
+        .arrow-right { background: linear-gradient(135deg, #f093fb, #f5576c); }
+        
+        .target-arrow-container {
+            width: 140px;
+            height: 140px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px auto;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+        
+        .target-arrow {
+            font-size: 4em;
+            color: #000000;
+            text-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { transform: scale(1); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); }
+            50% { transform: scale(1.05); box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5); }
+        }
+        
+        .pattern-sequence {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .pattern-item {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            color: white;
+            position: relative;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .simon-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 90px);
+            grid-template-rows: repeat(2, 90px);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .simon-button {
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            position: relative;
+            border: 3px solid transparent;
+        }
+        
+        .simon-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+        }
+        
+        .simon-red { 
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+        }
+        .simon-blue { 
+            background: linear-gradient(135deg, #4dabf7, #339af0);
+        }
+        .simon-green { 
+            background: linear-gradient(135deg, #51cf66, #37b24d);
+        }
+        .simon-yellow { 
+            background: linear-gradient(135deg, #ffd43b, #fab005);
+        }
+        
+        .simon-button.active {
+            transform: scale(1.1);
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.8);
+            border-color: white;
+        }
+
+        .color-reminder {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: white;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .color-reminder h4 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #ffd43b;
+        }
+
+        .mini-color-pairs {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .mini-pair {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .mini-box {
+            width: 25px;
+            height: 25px;
+            border-radius: 5px;
+            border: 2px solid white;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 40px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+            color: white;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .game-feedback {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: white;
+            margin: 15px 0;
+            min-height: 30px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 15px 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 8px 0;
+        }
+        
+        .stat-label {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Escape the Patterns</h1>
+            <p style="position: relative; z-index: 1;">Train your cognitive inhibition ability</p>
+        </div>
+        
+        <!-- ÉCRAN D'ACCUEIL -->
+        <div id="welcome-screen" class="content">
+            <div class="game-instructions">
+                <h2>🎯 Welcome to the Cognitive Inhibition Game</h2>
+                <p style="margin-top: 15px; font-size: 1.1em;">
+                    This game trains your ability to <strong>resist automatisms</strong> and <strong>control your impulses</strong>. 
+                    You'll need to do the opposite of your first intuition!
+                </p>
+                <p style="margin-top: 15px; font-size: 1.2em; color: #ffd43b;">
+                    🎮 <strong>Goal: Reach Level 25!</strong>
+                </p>
+            </div>
+            
+            <div class="challenge-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; margin: 20px 0;">
+                <h3>📊 Game Progression</h3>
+                <p style="margin-top: 10px; font-size: 1.1em;">
+                    <strong>25 challenges</strong> to complete the game!
+                </p>
+            </div>
+            
+            <div class="challenge-grid">
+                <div class="challenge-card">
+                    <h3>🎯 Challenge 1: Reversed Arrows</h3>
+                    <p style="margin-top: 10px;">
+                        Ignore the arrow's <strong>direction</strong> and click according to its <strong>color</strong> only.
+                    </p>
+                </div>
+                
+                <div class="challenge-card">
+                    <h3>🔄 Challenge 2: Inverse Colors</h3>
+                    <p style="margin-top: 10px;">
+                        A color is announced. Click on the <strong>opposite color</strong>!
+                    </p>
+                    <div class="opposite-colors-guide">
+                        <h4>📋 Color pairs:</h4>
+                        <div class="color-pairs">
+                            <div class="color-pair">
+                                <div class="color-box color-red"></div>
+                                <span>↔</span>
+                                <div class="color-box color-green"></div>
+                            </div>
+                            <div class="color-pair">
+                                <div class="color-box color-blue"></div>
+                                <span>↔</span>
+                                <div class="color-box color-yellow"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="challenge-card">
+                    <h3>🎨 Challenge 3: Stroop Test</h3>
+                    <p style="margin-top: 10px;">
+                        A color word appears. Click on the <strong>ink color</strong>, not what the word says!
+                    </p>
+                    <div class="opposite-colors-guide">
+                        <h4>📋 Example:</h4>
+                        <p style="margin-top: 15px; font-size: 1.2em; color: #333;">
+                            If you see the word <span style="color: #4dabf7; font-weight: bold;">RED</span><br>
+                            written in blue, click on <strong>BLUE</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn btn-primary" onclick="startGame()">🚀 Start the Game</button>
+            </div>
+        </div>
+        
+        <!-- ÉCRAN DE JEU -->
+        <div id="game-screen" class="content hidden">
+            <div class="game-area">
+                <div class="status-panel">
+                    <div class="status-item">❤️ Lives: <span id="lives">3</span></div>
+                    <div class="status-item">⭐ Score: <span id="score">0</span></div>
+                    <div class="status-item">📊 Level: <span id="level">1</span></div>
+                </div>
+                
+                <div class="game-feedback" id="game-feedback"></div>
+                
+                <!-- DÉFI DES FLÈCHES -->
+                <div id="arrow-challenge" class="hidden">
+                    <div id="target-arrow-container" class="target-arrow-container">
+                        <div class="target-arrow" id="target-arrow">↑</div>
+                    </div>
+                    <p style="color: white; font-size: 1em; margin: 10px 0;">
+                        Click on the square with the same <strong>COLOR</strong><br>
+                        (Ignore the arrow's direction!)
+                    </p>
+                    <div class="arrow-grid" id="arrow-grid">
+                        <div class="arrow arrow-up" onclick="arrowClick('up')">↑</div>
+                        <div class="arrow arrow-down" onclick="arrowClick('down')">↓</div>
+                        <div class="arrow arrow-left" onclick="arrowClick('left')">←</div>
+                        <div class="arrow arrow-right" onclick="arrowClick('right')">→</div>
+                    </div>
+                </div>
+                
+                <!-- INVERSE COLORS CHALLENGE -->
+                <div id="color-inverse-challenge" class="hidden">
+                    <p style="color: white; font-size: 1em; margin-bottom: 20px;">
+                        Click on the <strong>OPPOSITE</strong> color to the one announced!
+                    </p>
+                    
+                    <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; margin: 15px 0;">
+                        <p style="color: #ffd43b; font-size: 1em; margin-bottom: 12px;">Announced color:</p>
+                        <div id="announced-color" style="font-size: 2.5em; font-weight: bold; color: white; text-shadow: 0 0 25px rgba(255,255,255,0.5);">
+                            RED
+                        </div>
+                    </div>
+
+                    <p style="color: white; font-size: 0.95em; margin: 20px 0 15px 0;">Choose the opposite color:</p>
+                    
+                    <div style="display: flex; justify-content: center; gap: 20px; margin-top: 15px;">
+                        <div id="color-choice-1" class="simon-button" onclick="colorInverseClick(0)" 
+                             style="width: 110px; height: 110px; cursor: pointer;">
+                        </div>
+                        <div id="color-choice-2" class="simon-button" onclick="colorInverseClick(1)" 
+                             style="width: 110px; height: 110px; cursor: pointer;">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- STROOP CHALLENGE -->
+                <div id="stroop-challenge" class="hidden">
+                    <p style="color: white; font-size: 0.95em; margin-bottom: 15px;">
+                        Click on the <strong>INK COLOR</strong>, not what the word says!
+                    </p>
+
+                    <div id="stroop-word" style="font-size: 3em; font-weight: bold; margin: 30px 0; text-shadow: 0 0 20px rgba(255,255,255,0.3);">
+                        RED
+                    </div>
+
+                    <div class="simon-grid" id="stroop-grid">
+                        <div class="simon-button simon-red" onclick="stroopClick('red')"></div>
+                        <div class="simon-button simon-blue" onclick="stroopClick('blue')"></div>
+                        <div class="simon-button simon-green" onclick="stroopClick('green')"></div>
+                        <div class="simon-button simon-yellow" onclick="stroopClick('yellow')"></div>
+                    </div>
+                </div>
+                
+                <button id="next-btn" class="btn btn-success hidden" onclick="nextChallenge()" style="margin-top: 20px;">
+                    Next Challenge →
+                </button>
+                
+                <button class="btn btn-secondary" onclick="quitGame()" style="margin-top: 15px;">
+                    Quit Game
+                </button>
+            </div>
+        </div>
+        
+        <!-- RESULTS SCREEN -->
+        <div id="results-screen" class="content hidden">
+            <div class="game-instructions">
+                <h2>🎉 Game Over!</h2>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Final Score</div>
+                    <div class="stat-value" id="final-score">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Success Rate</div>
+                    <div class="stat-value" id="success-rate">0%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Inhibition Errors</div>
+                    <div class="stat-value" id="inhibition-errors">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Maximum Level</div>
+                    <div class="stat-value" id="max-level">1</div>
+                </div>
+            </div>
+            
+            <div class="challenge-grid" style="margin-top: 30px;">
+                <div class="challenge-card">
+                    <h3>🎯 Arrows</h3>
+                    <p style="margin-top: 10px; font-size: 1.5em; font-weight: bold; color: #667eea;" id="arrow-performance">-</p>
+                </div>
+                <div class="challenge-card">
+                    <h3>🔄 Inverse Colors</h3>
+                    <p style="margin-top: 10px; font-size: 1.5em; font-weight: bold; color: #667eea;" id="color-inverse-performance">-</p>
+                </div>
+                <div class="challenge-card">
+                    <h3>🎨 Stroop Test</h3>
+                    <p style="margin-top: 10px; font-size: 1.5em; font-weight: bold; color: #667eea;" id="stroop-performance">-</p>
+                </div>
+            </div>
+            
+            <div class="game-instructions" style="margin-top: 30px;">
+                <div id="performance-level">
+                    <h3>🏆 Maîtrise Exceptionnelle</h3>
+                    <p id="performance-text" style="margin-top: 10px; font-size: 1.1em;">
+                        Votre contrôle inhibiteur est remarquable !
+                    </p>
+                </div>
+            </div>
+            
+            <div class="challenge-card" style="margin-top: 20px;">
+                <h3>📊 Cognitive Analysis</h3>
+                <div style="text-align: left; margin-top: 15px; line-height: 2;">
+                    <p><strong>Automatism resistance:</strong> <span id="automatism-resistance">-</span></p>
+                    <p><strong>Cognitive flexibility:</strong> <span id="cognitive-flexibility">-</span></p>
+                    <p><strong>Attentional control:</strong> <span id="attention-control">-</span></p>
+                </div>
+            </div>
+            
+            <div class="challenge-card" style="margin-top: 20px;">
+                <h3>💡 Improvement Tips</h3>
+                <div id="improvement-tips" style="text-align: left; margin-top: 15px; line-height: 2;">
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn btn-primary" onclick="restartGame()">🔄 Play Again</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // === VARIABLES GLOBALES ===
+        const MAX_LEVELS = 25;
+        let currentScore = 0;
+        let lives = 3;
+        let currentLevel = 1;
+        let challengeIndex = 0;
+        const challenges = ['arrow', 'color-inverse', 'stroop'];
+        let currentChallenge = '';
+        
+        // Variables pour le défi des flèches
+        let targetDirection = '';
+        let targetColor = '';
+        
+        // Variables pour le défi couleurs inverses
+        let announcedColor = '';
+        let oppositeColor = '';
+        let colorChoices = [];
+        
+        // Variables pour le Stroop
+        let stroopWordColor = ''; // La couleur du mot écrit
+        let stroopInkColor = '';  // La couleur de l'encre
+        let isWaitingForInput = false;
+        
+        // Statistiques de jeu
+        const gameStats = {
+            totalAttempts: 0,
+            successfulAttempts: 0,
+            inhibitionErrors: 0,
+            arrowChallenges: { attempts: 0, success: 0 },
+            colorInverseChallenges: { attempts: 0, success: 0 },
+            stroopChallenges: { attempts: 0, success: 0 }
+        };
+        
+        const directionMap = {
+            'up': '↑',
+            'down': '↓',
+            'left': '←',
+            'right': '→'
+        };
+        
+        const colorMap = {
+            'up': 'arrow-up',
+            'down': 'arrow-down',
+            'left': 'arrow-left',
+            'right': 'arrow-right'
+        };
+        
+        // === FONCTIONS D'INITIALISATION ===
+        function startGame() {
+            // Réinitialiser toutes les variables
+            currentScore = 0;
+            lives = 3;
+            currentLevel = 1;
+            challengeIndex = 0;
+            gameStats.totalAttempts = 0;
+            gameStats.successfulAttempts = 0;
+            gameStats.inhibitionErrors = 0;
+            gameStats.arrowChallenges = { attempts: 0, success: 0 };
+            gameStats.colorInverseChallenges = { attempts: 0, success: 0 };
+            gameStats.stroopChallenges = { attempts: 0, success: 0 };
+            
+            // Changer d'écran
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            
+            updateUI();
+            startArrowChallenge();
+        }
+        
+        function updateUI() {
+            document.getElementById('lives').textContent = lives;
+            document.getElementById('score').textContent = currentScore;
+            document.getElementById('level').textContent = currentLevel + '/25';
+        }
+        
+        function hideAllChallenges() {
+            document.getElementById('arrow-challenge').classList.add('hidden');
+            document.getElementById('color-inverse-challenge').classList.add('hidden');
+            document.getElementById('stroop-challenge').classList.add('hidden');
+        }
+        
+        // === DÉFI DES FLÈCHES ===
+        function startArrowChallenge() {
+            currentChallenge = 'arrow';
+            hideAllChallenges();
+            document.getElementById('arrow-challenge').classList.remove('hidden');
+            generateArrowChallenge();
+        }
+        
+        function generateArrowChallenge() {
+            const directions = ['up', 'down', 'left', 'right'];
+            targetDirection = directions[Math.floor(Math.random() * directions.length)];
+            targetColor = directions[Math.floor(Math.random() * directions.length)];
+            
+            // S'assurer que la direction et la couleur sont différentes pour créer le conflit
+            while (targetDirection === targetColor) {
+                targetColor = directions[Math.floor(Math.random() * directions.length)];
+            }
+            
+            const targetArrow = document.getElementById('target-arrow');
+            const targetContainer = document.getElementById('target-arrow-container');
+            
+            targetArrow.textContent = directionMap[targetDirection];
+            targetContainer.className = 'target-arrow-container ' + colorMap[targetColor];
+            
+            document.getElementById('game-feedback').textContent = '';
+        }
+        
+        function arrowClick(clickedDirection) {
+            gameStats.totalAttempts++;
+            gameStats.arrowChallenges.attempts++;
+            
+            if (clickedDirection === targetColor) {
+                handleSuccess('Perfect! You ignored the direction and followed the color!');
+                gameStats.arrowChallenges.success++;
+            } else {
+                handleError('Error! You followed the direction instead of the color.');
+                gameStats.inhibitionErrors++;
+            }
+        }
+        
+        // === DÉFI COULEURS INVERSES ===
+        function startColorInverseChallenge() {
+            currentChallenge = 'color-inverse';
+            hideAllChallenges();
+            document.getElementById('color-inverse-challenge').classList.remove('hidden');
+            generateColorInverseChallenge();
+        }
+        
+        function generateColorInverseChallenge() {
+            // Define opposite color pairs
+            const colorPairs = [
+                { 
+                    colors: ['red', 'green'],
+                    names: { 'red': 'RED', 'green': 'GREEN' },
+                    css: { 'red': 'simon-red', 'green': 'simon-green' }
+                },
+                { 
+                    colors: ['blue', 'yellow'],
+                    names: { 'blue': 'BLUE', 'yellow': 'YELLOW' },
+                    css: { 'blue': 'simon-blue', 'yellow': 'simon-yellow' }
+                }
+            ];
+            
+            // Choisir une paire aléatoire
+            const selectedPair = colorPairs[Math.floor(Math.random() * colorPairs.length)];
+            
+            // Choisir quelle couleur annoncer
+            announcedColor = selectedPair.colors[Math.floor(Math.random() * 2)];
+            oppositeColor = selectedPair.colors[0] === announcedColor ? selectedPair.colors[1] : selectedPair.colors[0];
+            
+            // Afficher la couleur annoncée
+            const announcedElement = document.getElementById('announced-color');
+            announcedElement.textContent = selectedPair.names[announcedColor];
+            
+            // Mélanger l'ordre des choix
+            colorChoices = [announcedColor, oppositeColor];
+            if (Math.random() < 0.5) {
+                colorChoices.reverse();
+            }
+            
+            // Afficher les boutons de choix
+            const choice1 = document.getElementById('color-choice-1');
+            const choice2 = document.getElementById('color-choice-2');
+            
+            choice1.className = 'simon-button ' + selectedPair.css[colorChoices[0]];
+            choice2.className = 'simon-button ' + selectedPair.css[colorChoices[1]];
+            
+            showFeedback('Click on the OPPOSITE color!', 'warning');
+        }
+        
+        function colorInverseClick(choiceIndex) {
+            gameStats.totalAttempts++;
+            gameStats.colorInverseChallenges.attempts++;
+            
+            const clickedColor = colorChoices[choiceIndex];
+            
+            if (clickedColor === oppositeColor) {
+                handleSuccess('Excellent! You clicked on the opposite color!');
+                gameStats.colorInverseChallenges.success++;
+            } else {
+                handleError('Error! You clicked on the same color instead of the opposite.');
+                gameStats.inhibitionErrors++;
+            }
+        }
+        
+        // === TEST DE STROOP ===
+        function startStroopChallenge() {
+            currentChallenge = 'stroop';
+            hideAllChallenges();
+            document.getElementById('stroop-challenge').classList.remove('hidden');
+            
+            setTimeout(() => {
+                generateStroopChallenge();
+            }, 1000);
+        }
+        
+        function generateStroopChallenge() {
+            const colors = ['red', 'blue', 'green', 'yellow'];
+            const colorNames = {
+                'red': 'RED',
+                'blue': 'BLUE',
+                'green': 'GREEN',
+                'yellow': 'YELLOW'
+            };
+            const colorCodes = {
+                'red': '#ff6b6b',
+                'blue': '#4dabf7',
+                'green': '#51cf66',
+                'yellow': '#ffd43b'
+            };
+            
+            // Choisir le mot à afficher (la couleur écrite)
+            stroopWordColor = colors[Math.floor(Math.random() * colors.length)];
+            // Choisir la couleur de l'encre (différente du mot)
+            do {
+                stroopInkColor = colors[Math.floor(Math.random() * colors.length)];
+            } while (stroopInkColor === stroopWordColor);
+            
+            // Afficher le mot avec la couleur de l'encre
+            const wordElement = document.getElementById('stroop-word');
+            wordElement.textContent = colorNames[stroopWordColor];
+            wordElement.style.color = colorCodes[stroopInkColor];
+            
+            isWaitingForInput = true;
+            showFeedback('Click on the INK color, not what the word says!', 'warning');
+            setupStroopTimeout();
+        }
+        
+        function stroopClick(color) {
+            if (!isWaitingForInput) return;
+            
+            isWaitingForInput = false;
+            gameStats.totalAttempts++;
+            gameStats.stroopChallenges.attempts++;
+            
+            if (color === stroopInkColor) {
+                handleSuccess('Perfect! You resisted the automatism of reading!');
+                gameStats.stroopChallenges.success++;
+            } else {
+                handleError('Error! You read the word instead of looking at the color!');
+                gameStats.inhibitionErrors++;
+            }
+        }
+        
+        function setupStroopTimeout() {
+            setTimeout(() => {
+                if (isWaitingForInput && currentChallenge === 'stroop') {
+                    handleError('Time\'s up! You had to click on the ink color.');
+                    gameStats.inhibitionErrors++;
+                    isWaitingForInput = false;
+                }
+            }, 5000);
+        }
+        
+        // === GESTION DU JEU ===
+        function handleSuccess(message) {
+            gameStats.successfulAttempts++;
+            currentScore += 100 * currentLevel;
+            showFeedback(message, 'success');
+            updateUI();
+            
+            setTimeout(() => {
+                document.getElementById('next-btn').classList.remove('hidden');
+            }, 1500);
+        }
+        
+        function handleError(message) {
+            lives--;
+            showFeedback(message, 'error');
+            updateUI();
+            
+            if (lives <= 0) {
+                setTimeout(() => {
+                    endGame(false);
+                }, 2000);
+            } else {
+                setTimeout(() => {
+                    document.getElementById('next-btn').classList.remove('hidden');
+                }, 1500);
+            }
+        }
+        
+        function showFeedback(message, type) {
+            const feedback = document.getElementById('game-feedback');
+            feedback.textContent = message;
+            
+            switch(type) {
+                case 'success':
+                    feedback.style.color = '#00d4aa';
+                    break;
+                case 'error':
+                    feedback.style.color = '#ff6b6b';
+                    break;
+                case 'info':
+                    feedback.style.color = '#4ecdc4';
+                    break;
+                case 'warning':
+                    feedback.style.color = '#f093fb';
+                    break;
+                default:
+                    feedback.style.color = '#ffffff';
+            }
+            
+            feedback.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                feedback.style.transform = 'scale(1)';
+            }, 300);
+        }
+        
+        function nextChallenge() {
+            document.getElementById('game-feedback').textContent = '';
+            document.getElementById('next-btn').classList.add('hidden');
+            
+            challengeIndex = (challengeIndex + 1) % challenges.length;
+            
+            if (challengeIndex === 0) {
+                currentLevel++;
+                updateUI();
+                
+                // Vérifier si on a atteint le niveau maximum
+                if (currentLevel > MAX_LEVELS) {
+                    setTimeout(() => {
+                        endGame(true); // true indique que le joueur a terminé tous les niveaux
+                    }, 1000);
+                    return;
+                }
+            }
+            
+            switch (challenges[challengeIndex]) {
+                case 'arrow':
+                    startArrowChallenge();
+                    break;
+                case 'color-inverse':
+                    startColorInverseChallenge();
+                    break;
+                case 'stroop':
+                    startStroopChallenge();
+                    break;
+            }
+        }
+        
+        function quitGame() {
+            endGame(false);
+        }
+        
+        function endGame(completedAllLevels = false) {
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('hidden');
+            calculateResults(completedAllLevels);
+        }
+        
+        function calculateResults(completedAllLevels = false) {
+            const successRate = gameStats.totalAttempts > 0 ? 
+                Math.round((gameStats.successfulAttempts / gameStats.totalAttempts) * 100) : 0;
+            
+            const arrowRate = gameStats.arrowChallenges.attempts > 0 ?
+                Math.round((gameStats.arrowChallenges.success / gameStats.arrowChallenges.attempts) * 100) : 0;
+            
+            const colorInverseRate = gameStats.colorInverseChallenges.attempts > 0 ?
+                Math.round((gameStats.colorInverseChallenges.success / gameStats.colorInverseChallenges.attempts) * 100) : 0;
+            
+            const stroopRate = gameStats.stroopChallenges.attempts > 0 ?
+                Math.round((gameStats.stroopChallenges.success / gameStats.stroopChallenges.attempts) * 100) : 0;
+            
+            document.getElementById('final-score').textContent = currentScore;
+            document.getElementById('success-rate').textContent = successRate + '%';
+            document.getElementById('inhibition-errors').textContent = gameStats.inhibitionErrors;
+            document.getElementById('max-level').textContent = currentLevel;
+            
+            document.getElementById('arrow-performance').textContent = `${arrowRate}% (${gameStats.arrowChallenges.success}/${gameStats.arrowChallenges.attempts})`;
+            document.getElementById('color-inverse-performance').textContent = `${colorInverseRate}% (${gameStats.colorInverseChallenges.success}/${gameStats.colorInverseChallenges.attempts})`;
+            document.getElementById('stroop-performance').textContent = `${stroopRate}% (${gameStats.stroopChallenges.success}/${gameStats.stroopChallenges.attempts})`;
+            
+            let performanceLevel = '';
+            let performanceText = '';
+            
+            if (completedAllLevels) {
+                performanceLevel = '🎉 CHAMPION - 25 LEVELS COMPLETED! 🎉';
+                performanceText = 'INCREDIBLE! You finished all 25 levels! Your inhibitory control is exceptional and you perfectly master resistance to cognitive automatisms. Congratulations on this remarkable performance!';
+            } else if (successRate >= 80) {
+                performanceLevel = '🏆 Exceptional Mastery';
+                performanceText = 'Your inhibitory control is remarkable! You effectively resist automatisms.';
+            } else if (successRate >= 60) {
+                performanceLevel = '🥈 Good Control';
+                performanceText = 'You show good ability to resist automatic patterns.';
+            } else if (successRate >= 40) {
+                performanceLevel = '🥉 Progressing';
+                performanceText = 'Your brain is beginning to develop resistance to automatisms.';
+            } else {
+                performanceLevel = '📈 Beginner';
+                performanceText = 'Keep training! Cognitive inhibition improves with practice.';
+            }
+            
+            document.getElementById('performance-level').querySelector('h3').textContent = performanceLevel;
+            document.getElementById('performance-text').textContent = performanceText;
+            
+            document.getElementById('automatism-resistance').textContent = getResistanceLevel(gameStats.inhibitionErrors);
+            document.getElementById('cognitive-flexibility').textContent = getFlexibilityLevel(successRate);
+            document.getElementById('attention-control').textContent = getAttentionLevel(currentLevel);
+            
+            generateImprovementTips(successRate, gameStats.inhibitionErrors);
+        }
+        
+        function getResistanceLevel(errors) {
+            if (errors <= 2) return 'Excellent';
+            if (errors <= 5) return 'Good';
+            if (errors <= 8) return 'Moderate';
+            return 'To develop';
+        }
+        
+        function getFlexibilityLevel(rate) {
+            if (rate >= 80) return 'Very high';
+            if (rate >= 60) return 'High';
+            if (rate >= 40) return 'Moderate';
+            return 'To improve';
+        }
+        
+        function getAttentionLevel(level) {
+            if (level >= 20) return 'Exceptional';
+            if (level >= 15) return 'Excellent';
+            if (level >= 10) return 'Very good';
+            if (level >= 5) return 'Good';
+            if (level >= 3) return 'Satisfactory';
+            return 'To work on';
+        }
+        
+        function generateImprovementTips(successRate, errors) {
+            const tips = [];
+            
+            if (errors > 5) {
+                tips.push('• Take more time before reacting - slow down your automatic response');
+            }
+            
+            if (successRate < 60) {
+                tips.push('• Read instructions carefully before each challenge');
+                tips.push('• Focus on the opposite of your first impulse');
+            }
+            
+            if (gameStats.arrowChallenges.success / gameStats.arrowChallenges.attempts < 0.7) {
+                tips.push('• For arrows: completely ignore the shape, focus on the color');
+            }
+            
+            if (gameStats.colorInverseChallenges.success / gameStats.colorInverseChallenges.attempts < 0.7) {
+                tips.push('• For inverse colors: quickly identify the pair (red↔green or blue↔yellow)');
+            }
+            
+            if (gameStats.stroopChallenges.success / gameStats.stroopChallenges.attempts < 0.7) {
+                tips.push('• For the Stroop test: don\'t read the word, focus only on the ink color');
+            }
+            
+            tips.push('• Practice regularly - cognitive inhibition improves with training');
+            tips.push('• In daily life, get in the habit of stopping before acting impulsively');
+            
+            const tipsList = document.getElementById('improvement-tips');
+            tipsList.innerHTML = tips.slice(0, 5).join('<br>');
+        }
+        
+        function restartGame() {
+            document.getElementById('results-screen').classList.add('hidden');
+            document.getElementById('welcome-screen').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
